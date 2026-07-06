@@ -17,4 +17,10 @@ public class HelloWorld extends OpMode {
     public void loop() {
 
     }
+
+    // Single Line Comment
+    /*
+    1. Change Hello World for Hello Sebastien
+    2. Run the program in the Autonomous section of the DS
+     */
 }

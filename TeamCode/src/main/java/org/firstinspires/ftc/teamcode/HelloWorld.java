@@ -20,7 +20,7 @@ public class HelloWorld extends OpMode {
 
     // Single Line Comment
     /*
-    1. Change Hello World for Hello Sebastien
-    2. Run the program in the Autonomous section of the DS
+    1. Change Hello World for Hello Sebastien ok
+    2. Run the program in the Autonomous section of the DS ok
      */
 }

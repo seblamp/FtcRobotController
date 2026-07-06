@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @Disabled
 @Autonomous
 public class HelloWorld extends OpMode {
-
     @Override
     public void init() {
         telemetry.addData("Hello","Sebastien");
@@ -18,11 +17,4 @@ public class HelloWorld extends OpMode {
     public void loop() {
 
     }
-
-    //Single Line Comment
-
-    /*
-    1.Hello World, change the telemetry Hello Sebastien
-    2.Run this code in the Autonomous section of your DS
-     */
 }

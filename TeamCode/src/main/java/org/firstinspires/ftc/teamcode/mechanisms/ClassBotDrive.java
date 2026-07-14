@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class ClassBotDrive {    //Classe avec méthodes pour le Drivetrain
 
     private DcMotor frontLeftMotor, frontRightMotor;
+    private int leftPos,rightPos;
 
     public void init(HardwareMap hwMap) {  //Déclaration du matériel (Utilisation de front au cas où on ajouterait 2 moteurs (back))
         frontLeftMotor = hwMap.get(DcMotor.class, "leftmotor");
@@ -47,4 +48,24 @@ public class ClassBotDrive {    //Classe avec méthodes pour le Drivetrain
     public int rightMotorPosition() {  //methode pour avoir le télémétrie du moteur droit
         return  frontRightMotor.getCurrentPosition();
     }
-}
+
+    public void driveAuto(int leftTarget, int rightTarget, double speedAuto) {
+
+        int targetLeft = frontLeftMotor.getCurrentPosition() + leftTarget;
+        int targetRight = frontRightMotor.getCurrentPosition() + rightTarget;
+
+        frontLeftMotor.setTargetPosition(targetLeft);
+        frontRightMotor.setTargetPosition(targetRight);
+
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontLeftMotor.setPower(speedAuto);
+        frontRightMotor.setPower(speedAuto);
+    }
+    public boolean isDriveBusy() {
+        return frontLeftMotor.isBusy() || frontRightMotor.isBusy();
+    }
+
+    }
+

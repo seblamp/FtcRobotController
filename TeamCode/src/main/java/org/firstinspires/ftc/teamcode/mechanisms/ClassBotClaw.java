@@ -13,7 +13,7 @@ public class ClassBotClaw { // classe qui contrôle le servo
     }
 
     public void open() {   //méthodes pour les différentes positions du servo
-        servoPos.setPosition(0.0);
+        servoPos.setPosition(1.0);
     }
 
     public void neutral() {
@@ -21,7 +21,7 @@ public class ClassBotClaw { // classe qui contrôle le servo
     }
 
     public void close() {
-        servoPos.setPosition(1.0);
+        servoPos.setPosition(0.0);
     }
 
 }

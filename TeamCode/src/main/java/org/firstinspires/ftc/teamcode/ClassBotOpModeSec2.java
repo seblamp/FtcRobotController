@@ -1,36 +1,18 @@
-/*
- * CLASSBOT OPMODE COMPLET
- *
- * Version complète du TeleOp sans IMU.
- *
- * - Contrôle de la base avec triggers et joystick
- * - Mode lent avec les bumpers
- * - Contrôle manuel du bras
- * - 3 positions automatiques du bras (bas, milieu, haut)
- * - Contrôle de la pince (ouverte, neutre, fermée)
- * - Télémétrie :
- *      - Limit switch
- *      - Encodeur du bras
- *      - Encodeurs des moteurs gauche et droit
- */
-
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.mechanisms.ClassBotArmSec2;
+import org.firstinspires.ftc.teamcode.mechanisms.ClassBotClawSec2;
+import org.firstinspires.ftc.teamcode.mechanisms.ClassBotDriveSec2;
 
-import org.firstinspires.ftc.teamcode.mechanisms.ClassBotArm;
-import org.firstinspires.ftc.teamcode.mechanisms.ClassBotClaw;
-import org.firstinspires.ftc.teamcode.mechanisms.ClassBotDrive;
 
+@TeleOp(name = "ClassBotSec2")
+public class ClassBotOpModeSec2 extends OpMode {
 
-@TeleOp(name = "ClassBot Complet")
-public class ClassBotOpModeComplet extends OpMode {
-
-    ClassBotDrive drivetrain = new ClassBotDrive();  //on refait des instances de nos 3 classes pour contrôler le robot
-    ClassBotArm arm = new ClassBotArm();
-    ClassBotClaw claw = new ClassBotClaw();
+    ClassBotDriveSec2 drivetrain = new ClassBotDriveSec2();  //on refait des instances de nos 3 classes pour contrôler le robot
+    ClassBotArmSec2 arm = new ClassBotArmSec2();
+    ClassBotClawSec2 claw = new ClassBotClawSec2();
 
     double forward,turn;   //variables pour le drivetrain
 
@@ -43,10 +25,8 @@ public class ClassBotOpModeComplet extends OpMode {
         //On reset les encodeurs de tous les moteurs
         arm.resetArmEncoder();
         drivetrain.resetDriveEncoders();
-
         claw.open(); //On ouvre la pince
-
-        }
+    }
 
     @Override
     public void loop() { //Après avoir pesé sur Play
@@ -56,9 +36,6 @@ public class ClassBotOpModeComplet extends OpMode {
         Ralentir robot : bumper gauche ou droite
         Monter bras : dpad-up
         descendre bras : dpad-down
-        position bras down : y
-        position bras middle : dpad-left
-        poosition bras up : dpad-right
         Ouvrir pince : a
         Fermer pince : b
         Pince au milieu x
@@ -70,11 +47,12 @@ public class ClassBotOpModeComplet extends OpMode {
         turn = gamepad1.right_stick_x;
 
         if (gamepad1.left_bumper || gamepad1.right_bumper) {
-            forward *= 0.4;
-            turn *= 0.4;
+            drivetrain.setSpeedMultiplier(0.4);
+        }
+        else {
+            drivetrain.setSpeedMultiplier(1.0);
         }
         drivetrain.drive(forward,turn);
-
 
         //Contrôles du bras
         if (gamepad1.dpad_up) {
@@ -83,19 +61,8 @@ public class ClassBotOpModeComplet extends OpMode {
         else if (gamepad1.dpad_down) {
             arm.setArmSpeed(-0.5);
         }
-        else if (!arm.isArmBusy()) {
+        else
             arm.setArmSpeed(0);
-        }
-
-        if (gamepad1.y) {
-            arm.setArmDown(0.6);
-        }
-        else if (gamepad1.dpad_left) {
-            arm.setArmMiddle(0.6);
-        }
-        else if (gamepad1.dpad_right) {
-            arm.setArmUp(0.6);
-        }
 
         //Contrôles de la pince
         if (gamepad1.a) {
@@ -115,5 +82,6 @@ public class ClassBotOpModeComplet extends OpMode {
         telemetry.addData("Right Motor", drivetrain.rightMotorPosition());
     }
 }
+
 
 

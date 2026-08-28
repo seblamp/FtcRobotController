@@ -1,0 +1,28 @@
+package org.firstinspires.ftc.teamcode.mechanisms;
+
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
+public class ClassBotClawSec2 { // classe qui contrôle le servo
+
+    private Servo servoPos;
+
+    public void init(HardwareMap hwMap) {  // déclaration du matériel
+        servoPos = hwMap.get(Servo.class, "claw");
+
+    }
+
+    public void open() {   //méthodes pour les différentes positions du servo
+        servoPos.setPosition(1.0);
+    }   //différentes positions du servio
+
+    public void neutral() {
+        servoPos.setPosition(0.5);
+    }
+
+    public void close() {
+        servoPos.setPosition(0.0);
+    }
+
+}
+

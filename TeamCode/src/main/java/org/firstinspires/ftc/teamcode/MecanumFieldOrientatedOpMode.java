@@ -12,6 +12,10 @@ public class MecanumFieldOrientatedOpMode extends OpMode {
     MecanumDrive robot = new MecanumDrive();
     double forward, strafe, rotate;
 
+    boolean fieldOriented = true;
+    boolean previousBackButton = false;
+    boolean previousStartButton = false;
+
     @Override
     public void init() {
         robot.init(hardwareMap);
@@ -25,7 +29,29 @@ public class MecanumFieldOrientatedOpMode extends OpMode {
         strafe = gamepad1.left_stick_x;
         rotate = gamepad1.right_stick_x;
 
-        robot.driveFieldRelative(forward,strafe,rotate); //pour field relative
+        if (gamepad1.back && !previousBackButton) {
+            fieldOriented = !fieldOriented;
+        }
 
+        previousBackButton = gamepad1.back;
+
+        if (fieldOriented) {
+            robot.driveFieldRelative(forward, strafe, rotate);
+        } else {
+            robot.drive(forward, strafe, rotate);
+        }
+
+        if (gamepad1.start && !previousStartButton) {
+            robot.resetYaw();
+        }
+
+        previousStartButton = gamepad1.start;
+
+        telemetry.addData(
+                "Mode",
+                fieldOriented ? "FIELD ORIENTED" : "ROBOT ORIENTED"
+        );
+        telemetry.update();
     }
+
 }

@@ -1,3 +1,18 @@
+/*
+ * CLASSBOT OPMODE USING IMU
+ *
+ * Version complète du TeleOp avec IMU.
+ *
+ * Contient les mêmes contrôles que ClassBotOpModeComplet,
+ * avec en plus :
+ *
+ * - Télémétrie de la distance parcourue en cm
+ * - Télémétrie du heading du robot en degrés avec l'IMU
+ *
+ * Cette version utilise la version plus avancée de ClassBotDrive.
+ */
+
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;

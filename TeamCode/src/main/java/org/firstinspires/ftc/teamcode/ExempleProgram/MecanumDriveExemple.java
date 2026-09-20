@@ -9,6 +9,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 
 public class MecanumDriveExemple {
+
+    /* -------------------------------------------------------
+    Variables et matériel  -----------------------*/
     private DcMotor frontLeft, backLeft, frontRight, backRight; // Déclaration des moteurs
     private IMU imu;    //Déclaration du Gyro du ControlHub
 

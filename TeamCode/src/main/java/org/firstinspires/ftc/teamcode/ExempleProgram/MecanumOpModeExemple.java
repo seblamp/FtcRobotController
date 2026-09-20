@@ -27,11 +27,11 @@ public class MecanumOpModeExemple extends OpMode {
         strafe = gamepad1.left_stick_x;
         rotate = gamepad1.right_stick_x;
 
-        if (gamepad1.back && !previousBackButton) {   // Passage de Robot à Field Oriented
-            fieldOriented = !fieldOriented;
+        // Passage de Robot à Field Oriented
+        if (gamepad1.back && !previousBackButton) {    //On appui sur back et on n'appuyait pas dessus au loop précédent
+            fieldOriented = !fieldOriented;   // On switch le mode du robot (robot à field ou field à robot)
         }
-
-        previousBackButton = gamepad1.back;
+        previousBackButton = gamepad1.back; //enregistre l'état du bouton back
 
         if (fieldOriented) {
             drive.driveFieldRelative(forward, strafe, rotate);  // Méthode à utiliser si Field Oriented
@@ -39,11 +39,11 @@ public class MecanumOpModeExemple extends OpMode {
             drive.drive(forward, strafe, rotate);       //Méthode à utiliser si robot Oriented
         }
 
-        if (gamepad1.start && !previousStartButton) {   // Bouton pour remettre l'angle du gyro à 0
-            drive.resetYaw();
+        // Bouton pour remettre l'angle du gyro à 0
+        if (gamepad1.start && !previousStartButton) {   //On appui sur start et on n'appuyait pas dessus au loop précédent
+            drive.resetYaw();   // remet le Yaw à 0
         }
-
-        previousStartButton = gamepad1.start;
+        previousStartButton = gamepad1.start;  //enregistre l'état du bouton start
 
         telemetry.addData(       //Télémétrie pour savoir si on est en field ou robot oriented
                 "Mode",

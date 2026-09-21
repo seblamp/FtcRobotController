@@ -14,10 +14,10 @@ public class MecanumDrive {
     private IMU imu;
 
     public void init(HardwareMap hwMap) {
-        frontLeftMotor = hwMap.get(DcMotor.class, "avantgauche");
-        backLeftMotor = hwMap.get(DcMotor.class, "arrieregauche");
-        frontRightMotor = hwMap.get(DcMotor.class, "avantdroite");
-        backRightMotor = hwMap.get(DcMotor.class, "arrieredroite");
+        frontLeftMotor = hwMap.get(DcMotor.class, "frontLeft");
+        backLeftMotor = hwMap.get(DcMotor.class, "backLeft");
+        frontRightMotor = hwMap.get(DcMotor.class, "frontRight");
+        backRightMotor = hwMap.get(DcMotor.class, "backRight");
 
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -42,11 +42,11 @@ public class MecanumDrive {
     }
 
     //setter method
-    public void drive(double foward, double strafe, double rotate) {
-        double frontLeftPower = foward + strafe + rotate ;  // formules pour les mvts mecanum
-        double backLeftPower = foward - strafe + rotate;
-        double frontRightPower = foward - strafe - rotate;
-        double backRightPower = foward + strafe - rotate;
+    public void drive(double forward, double strafe, double rotate) {
+        double frontLeftPower = forward + strafe + rotate ;  // formules pour les mvts mecanum
+        double backLeftPower = forward - strafe + rotate;
+        double frontRightPower = forward - strafe - rotate;
+        double backRightPower = forward + strafe - rotate;
 
         double maxPower = 1.0;
         double maxSpeed = 1.0;
@@ -65,9 +65,9 @@ public class MecanumDrive {
          */
         }
 
-    public void driveFieldRelative (double foward, double strafe, double rotate) { //field oriented
-        double theta = Math.atan2(foward,strafe);
-        double r = Math.hypot(strafe, foward);
+    public void driveFieldRelative (double forward, double strafe, double rotate) { //field oriented
+        double theta = Math.atan2(forward,strafe);
+        double r = Math.hypot(strafe, forward);
         theta = AngleUnit.normalizeRadians(theta -imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
 
         double newForward = r * Math.sin(theta);

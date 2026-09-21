@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.ExempleProgram;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 @TeleOp  //TeleOp, Autonomous ou Disabled
 
 public class MecanumOpModeExemple extends OpMode {
@@ -26,6 +28,12 @@ public class MecanumOpModeExemple extends OpMode {
         forward = (gamepad1.right_trigger - gamepad1.left_trigger); // enlever le commentaire et mettre devant l'autre forward pour contrôler avec les triggers ou le joystick
         strafe = gamepad1.left_stick_x;
         rotate = gamepad1.right_stick_x;
+
+        if (gamepad1.left_bumper || gamepad1.right_bumper) {  //Boutons pour ralentir le robot
+            forward *= 0.4;
+            strafe *= 0.7;
+            rotate *=0.4;
+        }
 
         boolean drivingStraight =                 //Variable qui affirme ou non que le robot roule en ligne droite
                 Math.abs(forward) > 0.05 &&
@@ -60,10 +68,8 @@ public class MecanumOpModeExemple extends OpMode {
         }
         previousStartButton = gamepad1.start;  //enregistre l'état du bouton start
 
-        telemetry.addData(       //Télémétrie pour savoir si on est en field ou robot oriented
-                "Mode",
-                fieldOriented ? "FIELD ORIENTED" : "ROBOT ORIENTED"
-        );
+        telemetry.addData("Mode", fieldOriented ? "FIELD ORIENTED" : "ROBOT ORIENTED");//Télémétrie pour savoir si on est en field ou robot oriented
+        telemetry.addData("Heading", drive.BotHeading(AngleUnit.DEGREES));
         telemetry.update();
     }
 

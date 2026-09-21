@@ -30,10 +30,10 @@ public class MecanumDriveExemple {
         frontRight = hwMap.get(DcMotor.class, "frontRight");
         backRight = hwMap.get(DcMotor.class, "backRight");
 
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);  //Obverver la base lorsqu'elle avance et inverser les moteurs au besoin
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);  //Obverver la base lorsqu'elle avance et inverser les moteurs au besoin
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);   //Les moteurs utilisent sont PID interne pour toujours avoir le bon power
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -47,8 +47,9 @@ public class MecanumDriveExemple {
 
         imu = hwMap.get(IMU.class,"imu"); // imu devrait être le mom par défault sur la configuration du DriverHub
         RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,     //Changer UP et FOWARD pour la réalité du robot
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD); //Le ControlHub devrait toujours être dans un angle droit par rapport à la structure du robot
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,     //Changer UP et FOWARD pour la réalité du robot
+                RevHubOrientationOnRobot.UsbFacingDirection.UP
+        ); //Le ControlHub devrait toujours être dans un angle droit par rapport à la structure du robot
 
         imu.initialize(new IMU.Parameters(RevOrientation));
     }
@@ -59,9 +60,9 @@ public class MecanumDriveExemple {
     // Méthode pour la base en RobotOriented,
     public void drive  (double forward, double strafe, double rotate){   //déclaration des variables
         double frontLeftPower = forward + strafe + rotate;  //Formules qui gèrent le power aux roues.
-        double backLeftPower = forward + strafe + rotate;    // 1. Ajuster avance/recule en inversant les moteurs au besoin
-        double frontRightPower = forward + strafe + rotate;  // 2. Tester le strafe et modifier le signe +/- devant strafe dans les formules au besoin
-        double backRightPower = forward + strafe + rotate;   // 3. Tester le rotate et modifier le signe +/- devant rotate dans les formules au besoin
+        double backLeftPower = forward - strafe + rotate;    // 1. Ajuster avance/recule en inversant les moteurs au besoin
+        double frontRightPower = forward - strafe - rotate;  // 2. Tester le strafe et modifier le signe +/- devant strafe dans les formules au besoin
+        double backRightPower = forward + strafe - rotate;   // 3. Tester le rotate et modifier le signe +/- devant rotate dans les formules au besoin
 
         double maxPower = 1.0;
         double maxSpeed = 1.0;  //Ajustement de la vitesse maximale au besoin
@@ -119,6 +120,10 @@ public class MecanumDriveExemple {
     }
     public double headingCorrection() {   //Méthode qui transforme l'erreur de heading en différence de power que les moteurs vont avoir
         return headingError() * DRIVE_KP;  // 3 degrés d'erreur * 0.02 = 0.06 de power de plus ou moins pour le moteur
+    }
+
+    public double BotHeading(AngleUnit angleUnit) {   //méthode pour avoir le heading du robot de -180 à 180 ou -pie à pie
+        return imu.getRobotYawPitchRollAngles().getYaw(angleUnit);
     }
 
 }

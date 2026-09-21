@@ -35,10 +35,9 @@ public class MecanumOpModeExemple extends OpMode {
             rotate *=0.4;
         }
 
-        boolean drivingStraight =                 //Variable qui affirme ou non que le robot roule en ligne droite
-                Math.abs(forward) > 0.05 &&
-                        Math.abs(strafe) < 0.05 &&
-                        Math.abs(rotate) < 0.05;
+        boolean drivingStraight = ((Math.abs(forward) > 0.05 && Math.abs(strafe) < 0.05) ||  //Si le robot avance /recule ou si le robot strafe, la correction ligne droite active
+                        (Math.abs(strafe) > 0.05 && Math.abs(forward) < 0.05))
+                        && Math.abs(rotate) < 0.05;
 
         if (drivingStraight && !drive.isHoldingHeading()) {   //Si le robot va droit et qu'il n'était pas déja en train d'appliquer une correction ligne droite
             drive.startHoldingHeading();                     //Active la correction ligne droite
@@ -63,14 +62,23 @@ public class MecanumOpModeExemple extends OpMode {
         }
 
         // Bouton pour remettre l'angle du gyro à 0
-        if (gamepad1.start && !previousStartButton) {   //On appui sur start et on n'appuyait pas dessus au loop précédent
+        /*if (gamepad1.start && !previousStartButton) {   //On appui sur start et on n'appuyait pas dessus au loop précédent
             drive.resetYaw();   // remet le Yaw à 0
+        }
+        previousStartButton = gamepad1.start;*/  //enregistre l'état du bouton start
+
+        // Bouton pour remettre pour réinitialiser le IMU et remettre l'angle du gyro à 0
+        if (gamepad1.start && !previousStartButton) {   //On appui sur start et on n'appuyait pas dessus au loop précédent
+            drive.resetIMU();   // reset IMU, Yaw à 0
         }
         previousStartButton = gamepad1.start;  //enregistre l'état du bouton start
 
         telemetry.addData("Mode", fieldOriented ? "FIELD ORIENTED" : "ROBOT ORIENTED");//Télémétrie pour savoir si on est en field ou robot oriented
         telemetry.addData("Heading", drive.BotHeading(AngleUnit.DEGREES));
         telemetry.update();
+        telemetry.addData("Heading Error", drive.headingError());
+        telemetry.addData("Correction", drive.headingCorrection());
+
     }
 
 }

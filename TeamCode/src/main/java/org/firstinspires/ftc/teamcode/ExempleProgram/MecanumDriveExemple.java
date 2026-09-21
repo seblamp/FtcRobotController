@@ -101,6 +101,17 @@ public class MecanumDriveExemple {
     public void resetYaw() {
         imu.resetYaw();}  //Méthode pour remettre l'orientation du robot à zéro
 
+    public void resetIMU() {    // Méthode pour réinitialiser le IMU et reset le Yaw
+
+        RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP
+        );
+
+        imu.initialize(new IMU.Parameters(RevOrientation));
+        imu.resetYaw();
+    }
+
 
     /*----------------------------------------------------------------------------------------------
     -----------------------------TÉLÉOP : CORRECTION LIGNE DROITE ------------------------------*/

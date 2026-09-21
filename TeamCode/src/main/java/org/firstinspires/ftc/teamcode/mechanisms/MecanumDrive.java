@@ -14,10 +14,10 @@ public class MecanumDrive {
     private IMU imu;
 
     public void init(HardwareMap hwMap) {
-        frontLeftMotor = hwMap.get(DcMotor.class, "frontleftmotor");
-        backLeftMotor = hwMap.get(DcMotor.class, "backleftmotor");
-        frontRightMotor = hwMap.get(DcMotor.class, "frontRightmotor");
-        backRightMotor = hwMap.get(DcMotor.class, "backRightmotor");
+        frontLeftMotor = hwMap.get(DcMotor.class, "avantgauche");
+        backLeftMotor = hwMap.get(DcMotor.class, "arrieregauche");
+        frontRightMotor = hwMap.get(DcMotor.class, "avantdroite");
+        backRightMotor = hwMap.get(DcMotor.class, "arrieredroite");
 
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -26,8 +26,8 @@ public class MecanumDrive {
 
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -36,17 +36,17 @@ public class MecanumDrive {
 
         imu = hwMap.get(IMU.class,"imu");
         RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot (
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.UP);
         imu.initialize(new IMU.Parameters(RevOrientation));
     }
 
     //setter method
     public void drive(double foward, double strafe, double rotate) {
-        double frontLeftPower = foward - strafe - rotate ;  // formules pour les mvts mecanum
-        double backLeftPower = foward + strafe - rotate;
-        double frontRightPower = foward + strafe + rotate;
-        double backRightPower = foward - strafe + rotate;
+        double frontLeftPower = foward + strafe + rotate ;  // formules pour les mvts mecanum
+        double backLeftPower = foward - strafe + rotate;
+        double frontRightPower = foward - strafe - rotate;
+        double backRightPower = foward + strafe - rotate;
 
         double maxPower = 1.0;
         double maxSpeed = 1.0;
@@ -75,6 +75,10 @@ public class MecanumDrive {
 
         this.drive(newForward,newStrafe,rotate);
 
+    }
+
+    public void resetYaw() {
+        imu.resetYaw();
     }
     }
 

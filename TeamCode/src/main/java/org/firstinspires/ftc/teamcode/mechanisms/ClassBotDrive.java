@@ -19,7 +19,13 @@ public class ClassBotDrive {    //Classe avec méthodes pour le Drivetrain
     private double targetHeading;   //cible pour le virage
     private double turnPower; // vitesse pendant le virage
     private static final double turnTolerance = 2.0;// tolerance en degrés pour terminer le virage
-    private boolean turning = false;
+    private boolean turning = false;    //variable pour vérifier si le virage est terminé
+
+    //Variables pour la correction pour rouler droit
+    private boolean drivingStraight = false;
+    private double drivePower;
+    private double driveHeading;
+    private static final double DRIVE_KP = 0.02;
 
     public void init(HardwareMap hwMap) {  //Déclaration du matériel (Utilisation de front au cas où on ajouterait 2 moteurs (back))
         frontLeftMotor = hwMap.get(DcMotor.class, "leftmotor"); //Nom identique à la configuration du driverhub
@@ -95,6 +101,7 @@ public class ClassBotDrive {    //Classe avec méthodes pour le Drivetrain
     public boolean getTurning() {
         return turning;
     }
+    // Méthodes de diagnostic et de télémétrie
     public double getLeftPower() {
         return frontLeftMotor.getPower();
     }
@@ -131,6 +138,43 @@ public class ClassBotDrive {    //Classe avec méthodes pour le Drivetrain
         int ticks = cmToTicks(distanceCm);
         driveAuto(ticks, ticks, speed);
     }
+
+    //Méthodes pour que le robot se corrige en ligne droite
+    public void driveStraightDistance(double distanceCm, double speed) {
+
+        int ticks = cmToTicks(distanceCm);
+
+        targetHeading = classBotHeading(AngleUnit.DEGREES);
+        drivePower = Math.abs(speed);
+
+        driveAuto(ticks, ticks, drivePower);
+        drivingStraight = true;
+    }
+
+    public boolean isStraightDriveBusy() {
+        if (!drivingStraight) {
+            return false;
+        }
+        if (!isDriveBusy()) {
+            stop();
+            drivingStraight = false;
+            return false;
+        }
+        double currentHeading = classBotHeading(AngleUnit.DEGREES);
+        double error = normalizeAngle(targetHeading - currentHeading);
+        double correction = error * DRIVE_KP;
+        double leftPower = drivePower - correction;
+        double rightPower = drivePower + correction;
+
+        leftPower = Math.max(-1.0, Math.min(1.0, leftPower));
+        rightPower = Math.max(-1.0, Math.min(1.0, rightPower));
+
+        frontLeftMotor.setPower(Math.abs(leftPower));
+        frontRightMotor.setPower(Math.abs(rightPower));
+
+        return true;
+    }
+
 
     public void turnDegrees(String direction, double degrees, double power) { // Méthode pour tourner avec le IMU en autonome
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -172,8 +216,7 @@ public class ClassBotDrive {    //Classe avec méthodes pour le Drivetrain
                 normalizeAngle(targetHeading - currentHeading);
         // Vérification si on est à la cible
         if (Math.abs(error) <= turnTolerance) {
-            frontLeftMotor.setPower(0);
-            frontRightMotor.setPower(0);
+            stop();
             turning = false;
             return false;
         }
@@ -190,7 +233,10 @@ public class ClassBotDrive {    //Classe avec méthodes pour le Drivetrain
         }
         return true;
     }
-
+    public void stop() {
+        frontLeftMotor.setPower(0);
+        frontRightMotor.setPower(0);
+    }
 
 
 

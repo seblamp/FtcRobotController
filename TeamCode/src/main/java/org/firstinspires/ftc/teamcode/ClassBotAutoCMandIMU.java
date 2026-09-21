@@ -8,10 +8,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.ClassBotArm;
 import org.firstinspires.ftc.teamcode.mechanisms.ClassBotClaw;
 import org.firstinspires.ftc.teamcode.mechanisms.ClassBotDrive;
+import org.firstinspires.ftc.teamcode.mechanisms.ClassBotDriveMoreEfficient;
 
 @Autonomous(name ="TestAutoClassBotWithIMUandCM")
 public class ClassBotAutoCMandIMU extends OpMode {
-    ClassBotDrive drivetrain = new ClassBotDrive();
+    //ClassBotDrive drivetrain = new ClassBotDrive();
+    ClassBotDriveMoreEfficient drivetrain = new ClassBotDriveMoreEfficient();
     ClassBotArm arm = new ClassBotArm();
     ClassBotClaw claw = new ClassBotClaw();
 
@@ -47,10 +49,10 @@ public class ClassBotAutoCMandIMU extends OpMode {
         switch (state) {
             case FORWARD:
                 if (!stateStarted) {
-                    drivetrain.driveDistance(50, 0.2);  //avance de 50 cm à 0.2 de power
+                    drivetrain.driveStraightDistance(70, 0.2);
                     stateStarted = true;
                 }
-                if (!drivetrain.isDriveBusy()) {          //if (!drivetrain.isDriveBusy() && !arm.isArmBusy()) { //Si on fait aussi bouger le bras
+                if (!drivetrain.isStraightDriveBusy()) {
                     state = State.TURN;
                     stateStarted = false;
                 }
@@ -58,7 +60,8 @@ public class ClassBotAutoCMandIMU extends OpMode {
 
             case TURN:
                 if (!stateStarted) {
-                    drivetrain.turnDegrees("RIGHT", 90, 0.2);
+                    //drivetrain.turnDegrees("RIGHT", 90, 0.2); //tourner selon la classe ClassBotDrive
+                    drivetrain.turnDegrees(ClassBotDriveMoreEfficient.TurnDirection.RIGHT, 90, 0.2); //tourner selon la classe ClassBotDriveMoreEffiecient
                     stateStarted = true;
                 }
 

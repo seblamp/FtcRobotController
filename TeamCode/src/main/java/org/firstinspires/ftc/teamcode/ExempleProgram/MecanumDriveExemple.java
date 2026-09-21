@@ -10,10 +10,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class MecanumDriveExemple {
 
-    /* -------------------------------------------------------
-    Variables et matériel  -----------------------*/
+
+    /* ------------------------------------------------------------------------------------------
+    -----------------------------------VARIABLES -----------------------------------------------*/
+
     private DcMotor frontLeft, backLeft, frontRight, backRight; // Déclaration des moteurs
     private IMU imu;    //Déclaration du Gyro du ControlHub
+    private double targetHeading;    //Variable pour la correction en ligne droite
+    private boolean holdingHeading = false;  //Variable pour vérifier si on était déjà en train de rouler en ligne droite avec un headging
+    private static final double DRIVE_KP = 0.02; // Variable qui gère l'ampleur de la correction en ligne droite
+
+    /* ------------------------------------------------------------------------------------------
+    -----------------------------INITIALISATION DU MATÉRIEL ------------------------------------*/
 
     //Méthode qui initialise les moteurs et le IMU
     public void init (HardwareMap hwMap) {
@@ -45,12 +53,15 @@ public class MecanumDriveExemple {
         imu.initialize(new IMU.Parameters(RevOrientation));
     }
 
+    /* -----------------------------------------------------------------------------------------
+    ---------------------------DÉPLACEMENT DE LA BASE -----------------------------------------*/
+
     // Méthode pour la base en RobotOriented,
     public void drive  (double forward, double strafe, double rotate){   //déclaration des variables
         double frontLeftPower = forward + strafe + rotate;  //Formules qui gèrent le power aux roues.
-        double backLeftPower = forward + strafe + rotate;      // 1. Ajuster avance/recule en inversant les moteurs au besoin
-        double frontRightPower = forward + strafe + rotate;  //2. Tester le strafe et modifier le signe +/- devant strafe dans les formules au besoin
-        double backRightPower = forward + strafe + rotate;   //3. Tester le rotate et modifier le signe +/- devant rotate dans les formules au besoin
+        double backLeftPower = forward + strafe + rotate;    // 1. Ajuster avance/recule en inversant les moteurs au besoin
+        double frontRightPower = forward + strafe + rotate;  // 2. Tester le strafe et modifier le signe +/- devant strafe dans les formules au besoin
+        double backRightPower = forward + strafe + rotate;   // 3. Tester le rotate et modifier le signe +/- devant rotate dans les formules au besoin
 
         double maxPower = 1.0;
         double maxSpeed = 1.0;  //Ajustement de la vitesse maximale au besoin
@@ -79,7 +90,35 @@ public class MecanumDriveExemple {
         this.drive(newForward, newStrafe, rotate);  // On appelle la méthode drive avec les nouvelles variables
 
     }
+
+    /*---------------------------------------------------------------------------------------
+    ------------------------------------MÉTHODES DU IMU --------------------------------------*/
+
+    public double getHeading() {         //Méthode pour connaître le heading (le Yaw) actuel du robot
+        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+    }
     public void resetYaw() {
         imu.resetYaw();}  //Méthode pour remettre l'orientation du robot à zéro
+
+
+    /*----------------------------------------------------------------------------------------------
+    -----------------------------TÉLÉOP : CORRECTION LIGNE DROITE ------------------------------*/
+
+    public void startHoldingHeading() {    //Méthode qui démarre la correction en ligne droite
+        targetHeading = getHeading();       //Le heading initial devient le target heading
+        holdingHeading = true;              //La condition "es-tu en train de rouler droit ?" devient vrai
+    }
+    public void stopHoldingHeading() {    //Méthode qui arrête la correction de la ligne droite
+        holdingHeading = false;         //La condition "es-tu en train de rouler droit ?" redevient fausse
+    }
+    public boolean isHoldingHeading() {     //Méthode pour que le robot vérifie si la correction en ligne droite est active
+        return holdingHeading;              //Retourne cette variable true or false
+    }
+    public double headingError() {         //Méthode qui calcule l'erreur entre le target et la réalité
+        return AngleUnit.normalizeDegrees(targetHeading - getHeading());   //Ajuste la valeur de l'Angle au cas où on passe de 180 à -180 degrés
+    }
+    public double headingCorrection() {   //Méthode qui transforme l'erreur de heading en différence de power que les moteurs vont avoir
+        return headingError() * DRIVE_KP;  // 3 degrés d'erreur * 0.02 = 0.06 de power de plus ou moins pour le moteur
+    }
 
 }

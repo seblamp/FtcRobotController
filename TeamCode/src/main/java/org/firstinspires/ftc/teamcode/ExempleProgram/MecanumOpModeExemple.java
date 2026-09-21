@@ -27,6 +27,21 @@ public class MecanumOpModeExemple extends OpMode {
         strafe = gamepad1.left_stick_x;
         rotate = gamepad1.right_stick_x;
 
+        boolean drivingStraight =                 //Variable qui affirme ou non que le robot roule en ligne droite
+                Math.abs(forward) > 0.05 &&
+                        Math.abs(strafe) < 0.05 &&
+                        Math.abs(rotate) < 0.05;
+
+        if (drivingStraight && !drive.isHoldingHeading()) {   //Si le robot va droit et qu'il n'était pas déja en train d'appliquer une correction ligne droite
+            drive.startHoldingHeading();                     //Active la correction ligne droite
+        }
+        else if (!drivingStraight && drive.isHoldingHeading()) {       //Si le robot n'est pas en train de rouler droit et qu'il y avait une correction ligne droite active
+            drive.stopHoldingHeading();                 // Arrête la correction ligne droite
+
+        }if (drive.isHoldingHeading()) {            //Si le robot roule droite, la variable rotate est maintenant calculée par l'erreur de heading
+            rotate = -drive.headingCorrection();   //enlever le signe négatif si le robot fait le contraire de ce qu'on veut
+        }
+
         // Passage de Robot à Field Oriented
         if (gamepad1.back && !previousBackButton) {    //On appui sur back et on n'appuyait pas dessus au loop précédent
             fieldOriented = !fieldOriented;   // On switch le mode du robot (robot à field ou field à robot)

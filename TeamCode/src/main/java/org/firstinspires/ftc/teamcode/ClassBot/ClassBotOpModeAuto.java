@@ -1,11 +1,7 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.ClassBot;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-import org.firstinspires.ftc.teamcode.mechanisms.ClassBotArm;
-import org.firstinspires.ftc.teamcode.mechanisms.ClassBotClaw;
-import org.firstinspires.ftc.teamcode.mechanisms.ClassBotDrive;
 
 @Autonomous(name ="TestAutoClassBot")
 public class ClassBotOpModeAuto extends OpMode {

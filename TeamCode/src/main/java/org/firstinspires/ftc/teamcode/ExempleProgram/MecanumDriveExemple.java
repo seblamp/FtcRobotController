@@ -18,7 +18,7 @@ public class MecanumDriveExemple {
     private IMU imu;    //Déclaration du Gyro du ControlHub
     private double targetHeading;    //Variable pour la correction en ligne droite
     private boolean holdingHeading = false;  //Variable pour vérifier si on était déjà en train de rouler en ligne droite avec un headging
-    private static final double DRIVE_KP = 0.02; // Variable qui gère l'ampleur de la correction en ligne droite
+    private static final double DRIVE_KP = 0.03; // Variable qui gère l'ampleur de la correction en ligne droite
 
     /* ------------------------------------------------------------------------------------------
     -----------------------------INITIALISATION DU MATÉRIEL ------------------------------------*/

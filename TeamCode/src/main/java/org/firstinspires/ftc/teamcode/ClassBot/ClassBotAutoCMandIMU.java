@@ -1,14 +1,12 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.ClassBot;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.mechanisms.ClassBotArm;
-import org.firstinspires.ftc.teamcode.mechanisms.ClassBotClaw;
-import org.firstinspires.ftc.teamcode.mechanisms.ClassBotDrive;
-import org.firstinspires.ftc.teamcode.mechanisms.ClassBotDriveMoreEfficient;
 
 @Autonomous(name ="TestAutoClassBotWithIMUandCM")
 public class ClassBotAutoCMandIMU extends OpMode {
@@ -103,6 +101,56 @@ public class ClassBotAutoCMandIMU extends OpMode {
         telemetry.addData("Left mode", drivetrain.getLeftMode());
         telemetry.addData("Right mode", drivetrain.getRightMode());
 
+    }
+
+    public static class ClassBotBasePilotable {
+        private DcMotor leftMotor, rightMotor;
+        private double speedMultiplier = 1.0 ;
+
+
+        public void init(HardwareMap hwMap) {
+            leftMotor=hwMap.get(DcMotor.class, "leftmotor");
+            rightMotor=hwMap.get(DcMotor.class, "rightmotor");
+
+            leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+            leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+
+        public void drive(double avance, double tourne) {
+            double leftPower = avance + tourne;
+            double rightPower = avance - tourne;
+            double largest = Math.max(Math.abs(leftPower), Math.abs(rightPower));
+            if (largest > 1.0) {
+                leftPower /= largest;
+                rightPower/= largest;
+            }
+            leftMotor.setPower((leftPower*speedMultiplier));
+            rightMotor.setPower((rightPower*speedMultiplier));
+        }
+        public void setSpeedMultiplier (double multiplier)
+        {speedMultiplier = multiplier;
+        }
+
+        public void resetDriveEncoders(){
+            leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
+        public int leftMotorPosition () {
+            return leftMotor.getCurrentPosition();
+        }
+        public int rightMotorPosition () {
+            return rightMotor.getCurrentPosition();
+        }
     }
 }
 

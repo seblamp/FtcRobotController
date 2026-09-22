@@ -10,10 +10,11 @@ public class TestBenchMotor {
     public void init(HardwareMap hwMap) {
 
         motor = hwMap.get(DcMotor.class, "motor"); //en vert "motor" doit être le nom exact de la configuration sur le Driver Hub
-        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // ex : va aider si 2 moteurs sur un gearbox doivent tourner ensenble à la même vitesse
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER); // ex : va aider si 2 moteurs sur un gearbox doivent tourner ensemble à la même vitesse
+        //motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // Brake ou float
+        //motor.setDirection(DcMotorSimple.Direction.FORWARD); //si on a besoin d'inverser le moteur
         ticksPerRev = 28.0;
     }
-
     public void setMotorSpeed (double speed) {
         // accept values from -1.0 to 1.0
         motor.setPower(speed);

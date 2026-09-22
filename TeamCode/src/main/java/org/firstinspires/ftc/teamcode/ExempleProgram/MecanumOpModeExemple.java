@@ -75,9 +75,9 @@ public class MecanumOpModeExemple extends OpMode {
 
         telemetry.addData("Mode", fieldOriented ? "FIELD ORIENTED" : "ROBOT ORIENTED");//Télémétrie pour savoir si on est en field ou robot oriented
         telemetry.addData("Heading", drive.BotHeading(AngleUnit.DEGREES));
-        telemetry.update();
         telemetry.addData("Heading Error", drive.headingError());
         telemetry.addData("Correction", drive.headingCorrection());
+        telemetry.update();
 
     }
 

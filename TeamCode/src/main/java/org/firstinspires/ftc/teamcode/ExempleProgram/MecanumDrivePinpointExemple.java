@@ -25,6 +25,8 @@ public class MecanumDrivePinpointExemple {
     private boolean holdingHeading = false;  //Variable pour vérifier si on était déjà en train de rouler en ligne droite avec un headging
     private static final double DRIVE_KP = 0.03; // Variable qui gère l'ampleur de la correction en ligne droite
 
+
+
     /* ------------------------------------------------------------------------------------------
     -----------------------------INITIALISATION DU MATÉRIEL ------------------------------------*/
 
@@ -52,7 +54,10 @@ public class MecanumDrivePinpointExemple {
 
         pinpoint = hwMap.get(GoBildaPinpointDriver.class, "pinpoint");
         configurePinpoint();
-        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
+
+        pinpoint.setPosition(new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0));
+
+
 
     }
 
@@ -64,9 +69,9 @@ public class MecanumDrivePinpointExemple {
          *  Left of the center is a positive number, right of center is a negative number.
          *
          *  The Y pod offset refers to how far forwards from the tracking point the Y (strafe) odometry pod is.
-         *  Forward of center is a positive number, backwards is a negative number.
+         *  Forward of center is a positive number, backwards is a negative number.3+
          */
-        pinpoint.setOffsets(-84.0, -168.0, DistanceUnit.MM); //these are tuned for 3110-0002-0001 Product Insight #1
+        pinpoint.setOffsets(-2.5, -12.8, DistanceUnit.CM); //these are tuned for 3110-0002-0001 Product Insight #1
 
         /*
          * Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
@@ -142,7 +147,10 @@ public class MecanumDrivePinpointExemple {
         return pinpoint.getHeading(AngleUnit.DEGREES);
     }
     public void resetYaw() {
-        pinpoint.resetYaw();}  //Méthode pour remettre l'orientation du robot à zéro
+        double posX = pinpoint.getPosX(DistanceUnit.CM);
+        double posY = pinpoint.getPosY(DistanceUnit.CM);
+        pinpoint.setPosition(new Pose2D(DistanceUnit.CM, posX, posY, AngleUnit.DEGREES, 0));
+        /*pinpoint.recalibrateIMU();*/}  //Méthode pour remettre l'orientation du robot à zéro
 
     public void resetIMU() {    // Méthode pour réinitialiser le IMU et reset le Yaw
 
